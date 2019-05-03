@@ -54,8 +54,8 @@ def cnn_model_fn(features, labels, mode):
     )
 
     # units = number of symbols
-    logits = tf.layers.dense(inputs=dropout, units=nof_labels)
-    #logits = tf.layers.dense(inputs=dropout, units=len(labels))
+    ###logits = tf.layers.dense(inputs=dropout, units=nof_labels)
+    logits = tf.layers.dense(inputs=dropout, units=len(labels))
 
     predictions = {
         # generate predictions (for PREDICT and EVAL mode)
@@ -68,7 +68,8 @@ def cnn_model_fn(features, labels, mode):
     if mode == tf.estimator.ModeKeys.PREDICT:
         return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions)
 
-    onehot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=nof_labels)
+    ###onehot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=nof_labels)
+    onehot_labels = tf.one_hot(indices=tf.cast(labels, tf.int32), depth=len(labels))
     loss = tf.losses.softmax_cross_entropy(
         onehot_labels=onehot_labels, logits=logits
     )
