@@ -1,6 +1,7 @@
 from solver import Solver
 import numpy as np
 from skimage import io
+import time
 
 mean = np.load("utility/train_images_mean.npy")
 std_dev = np.load("utility/train_images_std.npy")
@@ -12,7 +13,10 @@ solver = Solver(
     train_std_dev=std_dev
 )
 
-image_path = 'utility/vg1.jpg'
+image_path = 'data/test_expressions/123.jpg'
 image = io.imread(image_path)
+
+aa = time.time()
 latex, result = solver.solve(image)
-print('end')
+bb = time.time()-aa
+print('end', bb)
