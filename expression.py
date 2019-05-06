@@ -12,6 +12,7 @@ class Expression:
         self.value = value
         self.latex = latex
 
+    @property
     def get_data(self):
 
         if self.__sym_length < 1:
@@ -40,18 +41,18 @@ class Expression:
             latex = ''
             for sym in self.__symbols:
                 if inital:
-                    if sym.type == 'CONST':
+                    if sym.type in ['CONST', 'FRACTION']:
                         accumulator += sym.value
-                        latex += str(sym.value)
+                        latex += str(sym.value) if sym.latex is None else sym.latex
                         inital = False
 
                 else:
-                    if sym.type != 'CONST':
-                        opp =  '-' if sym.symbol == '=' else sym.symbol
+                    if sym.type not in ['CONST', 'FRACTION']:
+                        opp = '-' if sym.symbol == '=' else sym.symbol
                         latex += opp
 
                     else:
-                        latex += str(sym.value)
+                        latex += str(sym.value) if sym.latex is None else sym.latex
                         accumulator = self.doOpertaion(accumulator, opp, sym.value)
                         opp = ''
 
@@ -62,6 +63,9 @@ class Expression:
         copy_sym = [x for x in self.__symbols]
         buffer = []
         for sym in copy_sym:
+
+            if sym.symbol == 'FRACTION': continue
+
             if sym.symbol in numbers or sym.type == 'CONST':
                 buffer.append(sym)
                 self.__symbols.remove(sym)
@@ -101,7 +105,7 @@ class Expression:
         return rez
 
     def resolve_fractions(self, potential_div):
-        potential_div = sorted(potential_div, key=lambda x: ((x.xmax - x.xmin), x.xmin))
+        potential_div = sorted(potential_div, key=lambda x: (-(x.xmax - x.xmin), x.xmin))
 
         while len(potential_div) > 0:
             temp_symbol = potential_div.pop(0)
@@ -139,11 +143,11 @@ class Expression:
                 print('EROoR')
                 sys.exit(-1)
 
-            latex1, value1 = Expression(symbols=above_list).get_data()
-            latex2, value2 = Expression(symbols=under_list).get_data()
+            latex1, value1 = Expression(symbols=above_list).get_data
+            latex2, value2 = Expression(symbols=under_list).get_data
 
             # Update fraction bb
             temp_symbol.value = value1/value2
-            temp_symbol.type = 'CONST'
-            temp_symbol.latex = '#frac{' + latex1 + '}{' + latex2 + '}'
+            temp_symbol.type = 'FRACTION'
+            temp_symbol.latex = r'\frac{' + latex1 + '}{' + latex2 + '}'
             temp_symbol.updateBorders(above_list + under_list + [temp_symbol])

@@ -11,7 +11,7 @@ class Solver:
         # Constants
         self.__train_mean = train_mean
         self.__train_std_dev = train_std_dev
-        self.__bb_size_threshold = 8
+        self.__bb_size_threshold = 2
         self.__bb_color = [255, 0, 0]
 
         # Load labels
@@ -53,9 +53,12 @@ class Solver:
 
         self.__normalize_bb(bBoxes)
 
+        bBoxes = sorted(bBoxes, key=lambda x: (x.xmin, x.ymin))
         # Create input for prediction
+        my_eval_data = np.array([bb.area_norm.flatten() for bb in bBoxes])
+
         eval_input_fn = tf.estimator.inputs.numpy_input_fn(
-            x={'x': np.array([bb.area_norm for bb in bBoxes])},
+            x={'x': my_eval_data},
             shuffle=False
         )
 
@@ -73,9 +76,9 @@ class Solver:
         # ----------SYNTAX ANALYSIS---------------
         bBoxes = sorted(bBoxes, key=lambda x: (x.xmin, x.ymin))
 
-        latex, rez = Expression(symbols=bBoxes).get_data()
+        latex, rez = Expression(symbols=bBoxes).get_data
         print(latex, '=',rez)
-        # ----------SEMATNIC ANALYSIS--------------
+        return latex, rez
 
 
         return "latex", "rezz"
@@ -112,6 +115,30 @@ class Solver:
     def __normalize_bb(self, bounding_boxes):
 
         for bb in bounding_boxes:
+            # plt.figure(figsize=(20, 10))
+            # plt.imshow(bb.area, cmap="gray")
+            # plt.show()
+            #new_image = cv2.resize(bb.area, (28, 28))
             bb.normalize()
-            bb.area_norm -= self.__train_mean
-            bb.area_norm /= self.__train_std_dev
+            #
+            # plt.figure(figsize=(20, 10))
+            # plt.imshow(bb.area_norm, cmap="gray")
+            # plt.show()
+
+
+            _, new_image = cv2.threshold(bb.area_norm, 127, 255, cv2.THRESH_BINARY_INV)
+
+            bb.area_norm = new_image
+            # plt.figure(figsize=(20, 10))
+            # plt.imshow(bb.area_norm, cmap="gray")
+            # plt.show()
+
+
+            bb.area_norm = new_image.astype(np.float32) / 255.
+
+            # plt.figure(figsize=(20, 10))
+            # plt.imshow(bb.area_norm, cmap="gray")
+            # plt.show()
+
+            #bb.area_norm -= self.__train_mean
+            #bb.area_norm /= self.__train_std_dev
