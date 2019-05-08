@@ -1,12 +1,17 @@
-import math, cv2
+import math
+import cv2
 import numpy as np
-from skimage.util import invert
-from scipy.ndimage.measurements import center_of_mass
 
 
 class BoundingBox:
 
     def __init__(self, id, x, y, width, height, image):
+
+        # Constants
+        self.__norm_resize = 42
+        self.__norm_with_pad_size = 48
+
+        # Variables
         self.id = id
         self.xmin = x
         self.xmax = x + width
@@ -25,10 +30,6 @@ class BoundingBox:
         self.area = image[y:(y+height), x:(x+width)]
         self.area_norm = None
 
-        # Constants
-        self.__norm_resize = 42
-        self.__norm_pad_size = 48
-
     def add_prediction(self, symbol, accuracy):
         self.symbol = symbol
         self.sym_accuracy = accuracy
@@ -36,10 +37,7 @@ class BoundingBox:
     def normalize(self):
         area = np.copy(self.area).astype(np.float32)
 
-        # 1.------> normalize all to 0-1
-        ##area /= np.max(area)
-
-        # 2.------> resize to 40x40
+        # Resize image
         rows, columns = area.shape
         new_size = self.__norm_resize
         if rows > columns:
@@ -52,38 +50,26 @@ class BoundingBox:
 
         area = cv2.resize(area, (columns, rows))
 
-        # 3.------> pad to 48x48
-        real_size = self.__norm_pad_size
+        # Add padding to image
+        real_size = self.__norm_with_pad_size
         col_pad_ceil = int(math.ceil((real_size-columns)/2.))
         col_pad_floor = int(math.floor((real_size-columns)/2.))
         rows_pad_ceil = int(math.ceil((real_size-rows)/2.))
         rows_pad_floor = int(math.floor((real_size-rows)/2.))
         pad_size = ((rows_pad_ceil, rows_pad_floor), (col_pad_ceil, col_pad_floor))
-        real_area = np.pad(area, pad_size, 'constant', constant_values=255)
-        # rows, columns = real_area.shape
-        #
-        # # 4.------> center the mass
-        # inverted = invert(real_area)
-        # centerY, centerX = center_of_mass(inverted)
-        # shiftX = np.round(columns/2. - centerX).astype(int)
-        # shiftY = np.round(rows/2. - centerY).astype(int)
-        #
-        # dim = np.float32([[1, 0, shiftX], [0, 1, shiftY]])
-        # real_area = cv2.warpAffine(real_area, dim, (columns, rows), borderValue=1)
+        self.area_norm = np.pad(area, pad_size, 'constant', constant_values=255)
 
-        self.area_norm = real_area
-
-    def isAbove(self, symbol):
+    def is_above(self, symbol):
         if symbol.xmin < self.xcenter < symbol.xmax:
             if self.ycenter < symbol.ymin: return True
         return False
 
-    def isUnder(self, symbol):
+    def is_under(self, symbol):
         if symbol.xmin < self.xcenter < symbol.xmax:
             if self.ycenter > symbol.ymax: return True
         return False
 
-    def updateBorders(self, union):
+    def update_borders(self, union):
         self.xmin = min([bb.xmin for bb in union])
         self.xmax = max([bb.xmax for bb in union])
         self.ymin = min([bb.ymin for bb in union])
