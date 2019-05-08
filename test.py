@@ -17,7 +17,7 @@ import time
 solver = Solver(
     model_dir='models/mnist_convnet_model_48x48',
     labels_file='utility/labels.txt',
-    bb_plot=False
+    bb_plot=True,
 )
 
 image_path = 'data/test_expressions/new4b.jpg'

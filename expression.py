@@ -12,8 +12,8 @@ class Expression:
         self.value = value
         self.latex = latex
 
-    @property
-    def get_data(self):
+
+    def resolve(self):
 
         if self.__sym_length < 1:
             print('Expression length lower than one!')
@@ -78,7 +78,7 @@ class Expression:
                     first.symbol = string
                     first.value = int(string)
                     first.type = 'CONST'
-                    first.updateBorders(buffer)
+                    first.update_borders(buffer)
                     self.__symbols.append(first)
                     buffer = []
 
@@ -89,7 +89,7 @@ class Expression:
             first.symbol = string
             first.value = int(string)
             first.type = 'CONST'
-            first.updateBorders(buffer)
+            first.update_borders(buffer)
             self.__symbols.append(first)
             buffer = []
 
@@ -120,10 +120,10 @@ class Expression:
                 if symbol.id == temp_symbol.id:
                     continue
 
-                elif symbol.isAbove(temp_symbol):
+                elif symbol.is_above(temp_symbol):
                     above_list.append(symbol)
 
-                elif symbol.isUnder(temp_symbol):
+                elif symbol.is_under(temp_symbol):
                     under_list.append(symbol)
 
                 else: continue
@@ -143,11 +143,11 @@ class Expression:
                 print('EROoR')
                 sys.exit(-1)
 
-            latex1, value1 = Expression(symbols=above_list).get_data
-            latex2, value2 = Expression(symbols=under_list).get_data
+            latex1, value1 = Expression(symbols=above_list).resolve()
+            latex2, value2 = Expression(symbols=under_list).resolve()
 
             # Update fraction bb
             temp_symbol.value = value1/value2
             temp_symbol.type = 'FRACTION'
             temp_symbol.latex = r'\frac{' + latex1 + '}{' + latex2 + '}'
-            temp_symbol.updateBorders(above_list + under_list + [temp_symbol])
+            temp_symbol.update_borders(above_list + under_list + [temp_symbol])
