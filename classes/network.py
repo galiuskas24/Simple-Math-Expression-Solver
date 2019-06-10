@@ -1,9 +1,9 @@
 import tensorflow as tf
 
-#-------INITIALIZTION and CONSTANTS---------
+# -------INITIALIZATION---------
 NUM_OF_LABELS = None
 
-#------------MODELS-----------------
+# ------------MODEL-----------------
 def cnn_model_fn(features, labels, mode):
     input_layer = tf.reshape(features["x"], [-1, 48, 48, 1])
 
@@ -57,7 +57,7 @@ def cnn_model_fn(features, labels, mode):
         training=mode == tf.estimator.ModeKeys.TRAIN
     )
 
-    # units = number of symbols
+    # number of symbols
     logits = tf.layers.dense(inputs=dropout, units=NUM_OF_LABELS)
 
     predictions = {
@@ -184,4 +184,3 @@ def cnn_model_fn2(features, labels, mode):
             labels=labels, predictions=predictions["classes"])}
     return tf.estimator.EstimatorSpec(
         mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
-

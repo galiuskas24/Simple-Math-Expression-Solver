@@ -33,9 +33,13 @@ class BoundingBox:
     def add_prediction(self, symbol, accuracy):
         self.symbol = symbol
         self.sym_accuracy = accuracy
+        self.type = 'SYMBOL'
 
     def normalize(self):
         area = np.copy(self.area).astype(np.float32)
+
+        #kernel = np.ones((5, 5), np.uint8)
+        #area = cv2.erode(area, kernel, iterations=2)
 
         # Resize image
         rows, columns = area.shape
@@ -49,6 +53,15 @@ class BoundingBox:
             columns = new_size
 
         area = cv2.resize(area, (columns, rows))
+
+
+        #----------------
+        #kernel = np.ones((2, 2), np.uint8)
+        #area = cv2.erode(area, kernel, iterations=2)
+        #area = cv2.dilate(area, kernel, iterations=2)
+
+
+        #----------------
 
         # Add padding to image
         real_size = self.__norm_with_pad_size
@@ -69,6 +82,10 @@ class BoundingBox:
             if self.ycenter > symbol.ymax: return True
         return False
 
+    def is_above_and_right(self, symbol):
+        return symbol.xcenter < self.xmin and symbol.ycenter > self.ymax
+
+
     def update_borders(self, union):
         self.xmin = min([bb.xmin for bb in union])
         self.xmax = max([bb.xmax for bb in union])
@@ -83,3 +100,6 @@ class BoundingBox:
 
     def __str__(self):
         return self.symbol
+
+    def __hash__(self):
+        return hash(self.id)

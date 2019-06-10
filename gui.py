@@ -1,17 +1,14 @@
 import tkinter
-import cv2
-import numpy as np
 import sympy as sp
 from io import BytesIO
 import PIL.Image, PIL.ImageTk
-import time
-from solver import Solver
 from PIL import Image, ImageTk
-from filters import *
+from classes.solver import Solver
+from classes.filters import *
 
 
 class GUI:
-    def __init__(self, window, title, display_filtered=False, video_source=1):
+    def __init__(self, window, title, display_filtered=False, video_source=0):
         self.window = window
         self.window.title(title)
         self.window.configure(background='white')
@@ -46,6 +43,7 @@ class GUI:
     def calculate(self):
         # Get a frame from the video source
         ret, frame = self.video.get_frame()
+        #frame = cv2.imread('data/test_expressions/new4b.jpg')
         latex, rez = solver.solve(frame)
 
         # Update latex label

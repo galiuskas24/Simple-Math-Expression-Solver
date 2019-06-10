@@ -1,5 +1,4 @@
-from solver import Solver
-import numpy as np
+from classes.solver import Solver
 from skimage import io
 import time
 
@@ -14,16 +13,19 @@ import time
 #     train_std_dev=std_dev
 # )
 
+model_path = 'models/mnist_convnet_model_48x48_future'
 solver = Solver(
-    model_dir='models/mnist_convnet_model_48x48',
+    model_dir=model_path,
     labels_file='utility/labels.txt',
-    bb_plot=True,
+    bb_plot=False,
 )
 
-image_path = 'data/test_expressions/new4b.jpg'
+image_path = 'test_expressions/pow3.jpg'
 image = io.imread(image_path)
 
 start_time = time.time()
 latex, result = solver.solve(image)
 print('LaTeX:', latex, '\nResult:', result)
 print('Time elapsed: {0:.2f} seconds.'.format(time.time() - start_time))
+
+solver.plot_prediction()

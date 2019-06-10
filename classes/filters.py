@@ -6,14 +6,13 @@ Input: 3-channel image
 Filters convert input image and prepare it for bounding box extraction.
 Output:
     Image with:
-        Black-> Area around symbols 
-        White-> Symbols 
+        Black-> Area around symbols
+        White-> Symbols
 """
 
 def standard_filter(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, new_image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)
-    #_, new_image = cv2.threshold(image, 220, 255, cv2.THRESH_BINARY_INV)
     return new_image
 
 

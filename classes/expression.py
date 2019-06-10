@@ -35,7 +35,7 @@ class Expression:
                 return element.latex, element.value
 
         else:
-            self.__symbols = sorted(self.__symbols, key=lambda x: (x.xmin, x.ymin))
+
             # 2. Resolve fractions
             self.resolve_fractions()
 
