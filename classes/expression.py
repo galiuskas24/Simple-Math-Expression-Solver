@@ -159,6 +159,7 @@ class Expression:
 
         if len(mylist) > 1: to_resolve.append(list(mylist))
 
+        #to_resolve = []
         for elements in to_resolve:
             elements = sorted(elements, key=lambda x: (x.xmin, x.ymin))
             first = elements[0]
@@ -255,7 +256,7 @@ class Expression:
                             hook_to.value = self.doOpertaion(hook_to.value, operation=hook_to.symbol)
                         hook_to.latex += '(' + latex + ')'
                         hook_to.symbol = None
-                        hook_to.update_borders(symbols + [hook_to])
+                        hook_to.update_borders(buffer + [hook_to])
                         return True
 
                     else: counter -= 1
