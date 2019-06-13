@@ -3,9 +3,9 @@
 
 # How to run?
 1. `mkdir models`
-2. Download model with link http://www.mediafire.com/file/i592s2jwasa3m5u/convnet_model_48x48_future.zip/file
+2. Download model from http://www.mediafire.com/file/i592s2jwasa3m5u/convnet_model_48x48_future.zip/file
 3. Unzip model directory to folder models
-4. Run test.py
+4. Run: `python3 test.py`
 
 # How to train?
 1. Run: `mkdir -p dataset dataset_divided/train dataset_divided/test`
