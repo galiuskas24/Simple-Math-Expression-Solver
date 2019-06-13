@@ -219,7 +219,7 @@ class Expression:
             sys.exit(-1)
 
         else:
-            for index in range(1, symbol_length - 1):
+            for index in range(1, symbol_length - 1, 2):
                 operation = self.__symbols[index].symbol
                 constant = self.__symbols[index + 1]
                 accumulator = self.doOpertaion(accumulator, operation, constant.value)
