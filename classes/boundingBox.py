@@ -38,8 +38,14 @@ class BoundingBox:
     def normalize(self):
         area = np.copy(self.area).astype(np.float32)
 
-        #kernel = np.ones((5, 5), np.uint8)
-        #area = cv2.erode(area, kernel, iterations=2)
+        # For very long symbols
+        a = (self.xmax - self.xmin) / (self.ymax - self.ymin)
+        if not 0.25 < a < 4:
+            kernel = np.ones((2, 2), np.uint8)
+            area = cv2.erode(area, kernel, iterations=2)
+
+            kernel = np.ones((1, 1), np.uint8)
+            area = cv2.dilate(area, kernel, iterations=1)
 
         # Resize image
         rows, columns = area.shape
@@ -55,13 +61,6 @@ class BoundingBox:
         area = cv2.resize(area, (columns, rows))
 
 
-        #----------------
-        #kernel = np.ones((2, 2), np.uint8)
-        #area = cv2.erode(area, kernel, iterations=2)
-        #area = cv2.dilate(area, kernel, iterations=2)
-
-
-        #----------------
 
         # Add padding to image
         real_size = self.__norm_with_pad_size
