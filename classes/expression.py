@@ -36,27 +36,26 @@ class Expression:
 
         else:
 
-            # 2. Resolve fractions
+            # 1. Resolve fractions
             self.resolve_fractions()
 
-            # 1. Resolve e and pi constants
+            # 2. Resolve e and pi constants
             self.resolve_initial_constants()
             # ONE LINE EVERYTHING
 
-            # 4. Resolve sin, cos, tan, log
+            # 3. Resolve sin, cos, tan, log
             self.resolve_trigonometry_and_log()
 
-            # 5. Resolve (, )
+            # 4. Resolve (, )
             while self.find_and_resolve_parentheses_unit([x for x in self.__symbols]): pass
 
-            # 6. Resolve sqrt
-
-            # 3. Create numbers
+            # 5. Create numbers
             self.mergeNumbers()
 
-            # 7. Do multiply
+            # 6. Do multiply
             self.resolve_multiplication()
-            # 8. Resolve plus and minus
+
+            # 7. Resolve plus and minus
             return self.resolve_plus_and_minus()
 
     def resolve_initial_constants(self):

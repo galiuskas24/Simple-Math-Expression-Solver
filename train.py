@@ -10,7 +10,7 @@ import tensorflow as tf
 net.NUM_OF_LABELS = 22
 BATCH_SIZE = 100
 STEPS = 20000
-OUTPUT_MODEL_PATH = 'models/abc'
+OUTPUT_MODEL_PATH = 'models/abc_model'
 
 # Load training and eval data
 train_data = np.load('utility/train_images.npy')
