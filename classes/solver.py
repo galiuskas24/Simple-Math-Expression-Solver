@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from classes import network as net
 import cv2
 import math
+import json
 
 from classes.boundingBox import BoundingBox
 from classes.expression import Expression
@@ -33,20 +34,13 @@ class Solver:
         self.filter = image_filter # must be public
 
         # Load labels
-        self.__labels = []
-        self.__latex = []
         with open(labels_file) as f:
-            for line in f.readlines():
-                if line.startswith('END'): break
-                line = line.rstrip()
-                label, latex = line.split()
-                self.__labels.append(label)
-                self.__latex.append(latex)
+            symbols_dict = json.load(f)
 
-        self.__labels_dic = dict(zip(range(len(self.__labels)), self.__labels))
+        self.__labels_dic = {y: x for x, y in symbols_dict.items()}
 
         # Load model
-        net.NUM_OF_LABELS = len(self.__labels)
+        net.NUM_OF_LABELS = len(self.__labels_dic)
         self.__classifier = tf.estimator.Estimator(
             model_fn=net.cnn_model_fn,
             model_dir=model_dir
