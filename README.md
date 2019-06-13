@@ -1,3 +1,6 @@
+# Requirements
+`pip install -r requirements.txt`
+
 # How to run?
 1. `mkdir models`
 2. Download model with link http://www.mediafire.com/file/i592s2jwasa3m5u/convnet_model_48x48_future.zip/file
