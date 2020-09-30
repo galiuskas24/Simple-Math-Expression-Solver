@@ -1,3 +1,6 @@
+# Science paper
+https://www.fer.unizg.hr/crv/ccvw.2019.0008
+
 # Requirements
 `pip install -r requirements.txt`
 
